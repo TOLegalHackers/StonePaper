@@ -216,7 +216,7 @@ contract StonePaper {
             }
 
         uint256 theIndex = papers.length;
-        papers.push(Paper(nameI,signI,databaseI,now,msg.sender,msg.sender,metaI));
+        papers.push(Paper(nameI,signI,databaseI,now,tx.origin,msg.sender,metaI));
 
         for(x = 0; x <metaI.length; x++) {
                 metaDatabase[metaI[x]].push(theIndex);
@@ -258,7 +258,8 @@ contract StonePaper {
        bytes32 sig,
        uint256 database,
        uint time,
-        address creator){
+        address creator,
+        address lawyer){
 
         Paper data  = papers[briefcase[msg.sender][indexI]];
         sig=data.sig;
@@ -266,8 +267,9 @@ contract StonePaper {
         database=data.database;
         time = data.time;
         creator = data.creator;
+        lawyer = data.lawyer;
 
-        
+
 
     }
 
