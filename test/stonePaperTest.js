@@ -65,7 +65,7 @@ describe("StonePaper Tests", function() {
 
 
   it("Create a Paper", function(done) {
-    StonePaper.createPaper("Test Paper",web3.sha3('A Signiture'),0,[],web3.toHex(primaryWallet),{gas: 3000000}, function(err) {
+    StonePaper.createPaper("Test Paper",web3.sha3('A Signiture'),0,[],{gas: 3000000}, function(err) {
       if (err){
         console.log(err);
         fail();
@@ -101,7 +101,7 @@ describe("StonePaper Tests", function() {
 
 
   it("Create a Paper With Meta", function(done) {
-    StonePaper.createPaper("Test Paper with Meta",web3.sha3('A Signiture'),0,[1],web3.toHex(primaryWallet),{gas: 3000000}, function(err) {
+    StonePaper.createPaper("Test Paper with Meta",web3.sha3('A Signiture'),0,[1],{gas: 3000000}, function(err) {
       if (err){
         console.log(err);
         fail();

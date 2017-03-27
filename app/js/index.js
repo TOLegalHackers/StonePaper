@@ -58,7 +58,7 @@ $(document).ready(function() {
   $("#blockchain button.setPaper").click(function() {
     var value1 = $("#blockchain input.docName").val();
     var value2 = $("#blockchain input.docText").val();
-    StonePaper.createPaper(value1,web3.sha3(value2), 0, [],godAddress, {gas: 3000000});
+    StonePaper.createPaper(value1,web3.sha3(value2), 0, [], {gas: 3000000});
     addToLog("#blockchain", "Paper saved to URL" );
   });
 

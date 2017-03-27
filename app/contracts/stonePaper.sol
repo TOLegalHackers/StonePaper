@@ -205,8 +205,7 @@ contract StonePaper {
        string nameI,
        bytes32 signI,
        uint256 databaseI,
-       uint256[] metaI,
-       address lawyerI
+       uint256[] metaI
         ) {
 
             for(uint x = 0; x <metaI.length; x++) {
@@ -220,7 +219,7 @@ contract StonePaper {
 
         for(x = 0; x <metaI.length; x++) {
                 metaDatabase[metaI[x]].push(theIndex);
-                PaperAdded(lawyerI, nameI,metaI[x],metaI[x]);
+                PaperAdded(msg.sender, nameI,metaI[x],metaI[x]);
         }
 
         briefcase[msg.sender].push(theIndex);
