@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <title>Embark - SimpleStorage Demo</title>
+    <link rel="stylesheet" href="css/app.css">
+    <script src="js/app.js"></script>
+  </head>
+  <body class="container">
+    <h3>Stone Paper - Usage Example</h3>
+
+    <ul class="nav nav-tabs" role="tablist" id="myTabs">
+      <li role="presentation" class="active"><a href="#blockchain" aria-controls="blockchain" role="tab" data-toggle="tab">Blockchain</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="blockchain">
+        <h3> 1. Set the god user</h3>
+        <div class="form-group form-inline">
+          <button class="setGod btn btn-primary">Set God</button>
+          <p>Before you get started you should create a God user to make changes at a later point</p>
+        </div>
+
+        <h3> 2. Get the god user</h3>
+        <div class="form-group">
+          <div>
+            Current God Is <span class="godValue"></span>
+          </div>
+          <button class="getGod btn btn-primary">Get Value</button>
+          <p>Click the button to get your wallet address showing you are God. If the value is 0 something has gone wrong</p>
+        </div>
+
+        <h3> 3. Assign a Lawyer to this address</h3>
+        <div class="form-group form-inline">
+          <input type="text" class="lawyerName form-control" value="Set Your Lawyer Name">
+          <button class="setLawyer btn btn-primary">Lawyer Name</button>
+          <p>This will set the name of the Lawyer for this address. It can only be run once.</p>
+        </div>
+
+        <h3> 4. Get the Lawyer's name</h3>
+        <div class="form-group">
+          <div>
+            This account's lawyer name is <span class="lawyerValue"></span>
+          </div>
+          <button class="getLawyer btn btn-primary">Get Value</button>
+          <p>Click the button to get the Lawyer Name for his wallet</p>
+        </div>
+
+
+        <h3> 5. Assign a URL for the database</h3>
+        <div class="form-group form-inline">
+          <input type="text" class="urlName form-control" value="www.sample.com">
+          <button class="setUrl btn btn-primary">Set Value</button>
+          <p>The data isn't store in the blockchain only a hash of the data. You can set the URL where the data will be stored here. This function is bound to database 0 and can only be run once.</p>
+        </div>
+
+        <h3> 6. Get the URL for the database</h3>
+        <div class="form-group">
+          <div>
+            The URL of database is <span class="urlValue"></span>
+          </div>
+          <button class="getUrl btn btn-primary">Get Value</button>
+          <p>Click the button to get url address.</p>
+        </div>
+
+        <h3> 7.Create a Paper for the database</h3>
+        <div class="form-group form-inline">
+          <input type="text" class="docName form-control" value="Document Name"><br>
+          <input type="text" class="docText form-control" value="Text to be hashed">
+          <button class="setPaper btn btn-primary">Set Value</button>
+          <p>Set the name of the document, as well as include some hash. This text will automatically be hashed and stored in the blockchain</p>
+        </div>
+
+        <h3> 8. Get the paper</h3>
+        <div class="form-group form-inline">
+          <input type="text" class="indexV form-control" value="www.sample.com">
+        </div>
+        <div class="form-group">
+          <div>
+
+
+            Name of Paper <span class="NameV"></span><br>
+            Hash <span class="HashV"></span><br>
+            Time <span class="TimeV"></span><br>
+            Lawyer <span class="LawyerV"></span><br>
+            Url <span class="UrlV"></span><br>
+              <button class="getPaper btn btn-primary">Get Document by Index</button>
+          </div>
+
+        </div>
+
+
+
+
+
+
+        <h3> 3. Contract Calls </h3>
+        <p>Javascript calls being made: </p>
+        <div class="logs">
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
