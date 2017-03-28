@@ -3,8 +3,18 @@
     "gas": "auto",
     "contracts": {
       "StonePaper": {
+        "gas": 4500000,
         "args": [
         ]
+      },
+      "GasReceipt": {
+        "gas": 4500000,
+        "args": [
+        ]
+      },
+      "HumanID": {
+        "gas": 4500000,
+        "args": ["$StonePaper"]
       }
     }
   }

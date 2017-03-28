@@ -1,6 +1,60 @@
 pragma solidity ^0.4.2;
 //contract tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token); }
 
+contract HumanID{
+
+  struct IDCard{
+    bool initalized;
+    string name;
+    bytes32 hashV;
+  }
+
+  mapping (address => bool) public isSuperVisor;
+  mapping (address => IDCard) public idCards;
+  mapping (address => address) public creator;
+
+  function createID(address user, string nameI, bytes32 hashI){
+    if (isSuperVisor[msg.sender]==true){
+      if (idCards[user].initalized==false){
+        idCards[user].initalized=true;
+        idCards[user].name=nameI;
+        idCards[user].hashV=hashI;
+        creator[user]=msg.sender;
+      }else{
+        throw;
+      }
+    } else{
+      throw;
+    }
+  }
+  function editID(address user, string nameI, bytes32 hashI){
+      if (creator[user]==msg.sender){
+        idCards[user].name=nameI;
+        idCards[user].hashV=hashI;
+      }else{
+        throw;
+      }
+  }
+  function addSupervisor(address user){
+    if (isSuperVisor[msg.sender]==true){
+      isSuperVisor[user]=true;
+    }
+
+  }
+  function grabID(address user) constant returns ( bool initalized,string name,bytes32 hashV){
+
+    initalized = idCards[user].initalized;
+    name = idCards[user].name;
+    hashV = idCards[user].hashV;
+  }
+
+  function HumanID(){
+    isSuperVisor[msg.sender]=true;
+  }
+}
+
+
+
 contract StonePaper {
 
 
@@ -19,6 +73,11 @@ contract StonePaper {
        address creator; // Creator of said document
        address lawyer; // Lawyer who authorized said document
        uint256[] meta; // All Meta data for document
+       address contractLoc; // Contract Location
+   }
+
+   function StonePaper(){
+     godUser=msg.sender;
    }
 
 
@@ -49,6 +108,7 @@ contract StonePaper {
     mapping (uint256 => mapping(address => bool)) public publicMeta;
     mapping (uint256 => bool) public isPublic;
     mapping (uint256 => uint256[]) public metaDatabase;
+    mapping (address => mapping(address => uint256)) public lastPaperAdded;
 
 
     /* This generates a public event on the blockchain that will notify clients */
@@ -173,7 +233,8 @@ contract StonePaper {
 
     /* Return the English description of a meta tag */
 
-    function getMeta(uint256 meta) constant returns (string){
+    function getMeta(uint256 meta) constant returns (string metaName){
+        metaName = metaList[meta];
         return metaList[meta];
     }
 
@@ -205,7 +266,9 @@ contract StonePaper {
        string nameI,
        bytes32 signI,
        uint256 databaseI,
-       uint256[] metaI
+       uint256[] metaI,
+       address contractLoc,
+       address goToLocation
         ) {
 
             for(uint x = 0; x <metaI.length; x++) {
@@ -215,7 +278,7 @@ contract StonePaper {
             }
 
         uint256 theIndex = papers.length;
-        papers.push(Paper(nameI,signI,databaseI,now,tx.origin,msg.sender,metaI));
+        papers.push(Paper(nameI,signI,databaseI,now,tx.origin,msg.sender,metaI,contractLoc));
 
         for(x = 0; x <metaI.length; x++) {
                 metaDatabase[metaI[x]].push(theIndex);
@@ -223,8 +286,37 @@ contract StonePaper {
         }
 
         briefcase[msg.sender].push(theIndex);
+        lastPaperAdded[msg.sender][contractLoc]=theIndex;
+        if (msg.sender != contractLoc){
+          briefcase[goToLocation].push(theIndex);
+        }
 
     }
+
+    /* Get last paper for a contract for a user;
+    */
+
+    function getLastPaperFromContract(address targetI, address contractI) constant returns (
+      string name,
+   bytes32 sig,
+   uint256 database,
+   uint time,
+    address creator,
+    address lawyer,
+    address contractLoc){
+
+      Paper data  = papers[lastPaperAdded[targetI][contractI]];
+      sig=data.sig;
+      name=data.name;
+      database=data.database;
+      time = data.time;
+      creator = data.creator;
+      lawyer = data.lawyer;
+      contractLoc = data.contractLoc;
+
+    }
+
+
 
     /* Copy data to another user Account
     _to the address where the data should go
@@ -258,7 +350,8 @@ contract StonePaper {
        uint256 database,
        uint time,
         address creator,
-        address lawyer){
+        address lawyer,
+        address contractLoc){
 
         Paper data  = papers[briefcase[msg.sender][indexI]];
         sig=data.sig;
@@ -267,6 +360,7 @@ contract StonePaper {
         time = data.time;
         creator = data.creator;
         lawyer = data.lawyer;
+        contractLoc = data.contractLoc;
 
 
 
@@ -294,7 +388,8 @@ contract StonePaper {
       uint256 database,
       uint time,
       address creator,
-      address lawyer){
+      address lawyer,
+      address contractLoc){
     Paper data = papers[metaDatabase[metaI][indexI]];
     sig=data.sig;
     text=data.name;
@@ -302,6 +397,7 @@ contract StonePaper {
     time = data.time;
     creator = data.creator;
     lawyer = data.lawyer;
+    contractLoc = data.contractLoc;
     }
 
     /* This unnamed function is called whenever someone tries to send ether to it */
@@ -425,6 +521,43 @@ contract StonePaper {
 
 
 
+
+
+
+}
+
+
+contract GasReceipt{
+
+
+
+  struct receipt{
+    address accountI;
+    string infoE;
+  }
+
+  address stonePaper;
+
+  receipt[] reciptManager;
+
+  mapping (address => uint256[]) public receiptFinder;
+
+  function createReceipt(address accountI, string infoI){
+    uint256 recipeIndex = reciptManager.length;
+    receiptFinder[accountI].push(reciptManager.length);
+    reciptManager.push(receipt(accountI,infoI));
+  }
+
+  function getReceipt(address user, uint256 index) constant returns (
+    string info){
+      info = reciptManager[receiptFinder[user][index]].infoE;
+
+  }
+
+  function GasReceipt(address stonePaperI){
+    stonePaper = stonePaperI;
+    StonePaper stonePaperC = StonePaper(stonePaper);
+  }
 
 
 
