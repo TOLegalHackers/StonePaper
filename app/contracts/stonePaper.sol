@@ -1,59 +1,63 @@
 pragma solidity ^0.4.2;
 //contract tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token); }
 
-contract HumanID{
 
-  struct IDCard{
-    bool initalized;
-    string name;
-    bytes32 hashV;
+
+contract TwoPersonContract{
+  string public standard = 'Token 0.1';
+  string public name = "TwoPersonContract";
+
+  address public  one;
+  address public  two;
+
+  bool oneS;
+  bool twoS;
+
+  bytes32 public sig;
+
+  function TwoPersonContract(address oneI, address twoI, bytes32 sigI){
+    one = oneI;
+    two = twoI;
+    sig = sigI;
   }
 
-  mapping (address => bool) public isSuperVisor;
-  mapping (address => IDCard) public idCards;
-  mapping (address => address) public creator;
+  function getInfo() constant returns (bytes32 hashV, address oneO, address twoO, address contractO){
+    hashV = sig;
+    oneO = one;
+    twoO = two;
+    contractO =this;
 
-  function createID(address user, string nameI, bytes32 hashI){
-    if (isSuperVisor[msg.sender]==true){
-      if (idCards[user].initalized==false){
-        idCards[user].initalized=true;
-        idCards[user].name=nameI;
-        idCards[user].hashV=hashI;
-        creator[user]=msg.sender;
-      }else{
-        throw;
-      }
-    } else{
-      throw;
+  }
+
+  function signOne(){
+    if (one == msg.sender){
+      oneS=true;
     }
   }
-  function editID(address user, string nameI, bytes32 hashI){
-      if (creator[user]==msg.sender){
-        idCards[user].name=nameI;
-        idCards[user].hashV=hashI;
-      }else{
-        throw;
-      }
-  }
-  function addSupervisor(address user){
-    if (isSuperVisor[msg.sender]==true){
-      isSuperVisor[user]=true;
+
+  function signTwo(){
+    if (two == msg.sender){
+      twoS=true;
     }
-
-  }
-  function grabID(address user) constant returns ( bool initalized,string name,bytes32 hashV){
-
-    initalized = idCards[user].initalized;
-    name = idCards[user].name;
-    hashV = idCards[user].hashV;
   }
 
-  function HumanID(){
-    isSuperVisor[msg.sender]=true;
+  function checkHash(bytes32 hash) constant returns (bool isSame){
+    isSame = (sig==hash);
+    return (sig==hash);
   }
+
+  function isSigned() constant returns (uint8 isSame){
+    uint8 vReturn =0;
+    if (oneS){
+      vReturn =vReturn+1;
+    }
+    if (twoS){
+      vReturn =vReturn+2;
+    }
+    return vReturn;
+  }
+
 }
-
-
 
 contract StonePaper {
 
@@ -268,7 +272,7 @@ contract StonePaper {
        uint256 databaseI,
        uint256[] metaI,
        address contractLoc,
-       address goToLocation
+       address[] goToLocation
         ) {
 
             for(uint x = 0; x <metaI.length; x++) {
@@ -287,9 +291,11 @@ contract StonePaper {
 
         briefcase[msg.sender].push(theIndex);
         lastPaperAdded[msg.sender][contractLoc]=theIndex;
-        if (msg.sender != contractLoc){
-          briefcase[goToLocation].push(theIndex);
+        for (uint y =0; y<goToLocation.length;y++){
+          briefcase[goToLocation[y]].push(theIndex);
+          lastPaperAdded[goToLocation[y]][contractLoc]=theIndex;
         }
+
 
     }
 
@@ -561,4 +567,59 @@ contract GasReceipt{
 
 
 
+}
+
+
+
+
+contract HumanID{
+
+  struct IDCard{
+    bool initalized;
+    string name;
+    bytes32 hashV;
+  }
+
+  mapping (address => bool) public isSuperVisor;
+  mapping (address => IDCard) public idCards;
+  mapping (address => address) public creator;
+
+  function createID(address user, string nameI, bytes32 hashI){
+    if (isSuperVisor[msg.sender]==true){
+      if (idCards[user].initalized==false){
+        idCards[user].initalized=true;
+        idCards[user].name=nameI;
+        idCards[user].hashV=hashI;
+        creator[user]=msg.sender;
+      }else{
+        throw;
+      }
+    } else{
+      throw;
+    }
+  }
+  function editID(address user, string nameI, bytes32 hashI){
+      if (creator[user]==msg.sender){
+        idCards[user].name=nameI;
+        idCards[user].hashV=hashI;
+      }else{
+        throw;
+      }
+  }
+  function addSupervisor(address user){
+    if (isSuperVisor[msg.sender]==true){
+      isSuperVisor[user]=true;
+    }
+
+  }
+  function grabID(address user) constant returns ( bool initalized,string name,bytes32 hashV){
+
+    initalized = idCards[user].initalized;
+    name = idCards[user].name;
+    hashV = idCards[user].hashV;
+  }
+
+  function HumanID(){
+    isSuperVisor[msg.sender]=true;
+  }
 }

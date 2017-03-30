@@ -1,17 +1,20 @@
 <html>
   <head>
-    <title>Embark - SimpleStorage Demo</title>
+    <title>StonePaper Demo</title>
     <link rel="stylesheet" href="css/app.css">
     <script src="js/app.js"></script>
+    <script src="js/signature_pad.min.js"></script>
+
   </head>
   <body class="container">
     <h3>Stone Paper - Usage Example</h3>
 
     <ul class="nav nav-tabs" role="tablist" id="myTabs">
       <li role="presentation" class="active"><a href="#blockchain" aria-controls="blockchain" role="tab" data-toggle="tab">Blockchain</a></li>
-      <li role="presentation"><a href="#GasReceipt" aria-controls="GasReceipt" role="tab" data-toggle="tab">Write Gas Recipt<span class="pull-right" id="status-storage"></a></li>
-      <li role="presentation"><a href="#communication" aria-controls="communication" role="tab" data-toggle="tab">P2P communication (Whisper/Orbit)<span class="pull-right" id="status-communication"></span></a></li>
-
+      <li role="presentation"><a href="#GasReceipt" aria-controls="GasReceipt" role="tab" data-toggle="tab">Write Gas Recipt</a></li>
+      <li role="presentation"><a href="#LawyerSignature" aria-controls="LawyerSignature" role="tab" data-toggle="tab" class="HasSigniture">Contract Signiture Traditional and Lawyer</a></li>
+      <li role="presentation"><a href="#NoLawyerSignature" aria-controls="NoLawyerSignature" role="tab" data-toggle="tab" class="HasSigniture">Load Contract</a></li>
+      <li role="presentation"><a href="#NoSignature" aria-controls="NoSignature" role="tab" data-toggle="tab" class="HasSigniture">Contract Signiture Digital Only</a></li>
     </ul>
 
     <div class="tab-content">
@@ -107,8 +110,6 @@
         <div class="logs">
         </div>
       </div>
-
-
       <div role="tabpanel" class="tab-pane" id="GasReceipt">
 
         <h3> 1.Choose a Wallet and write a recipt for that wallet</h3>
@@ -132,30 +133,102 @@
 
 
       </div>
-      <div role="tabpanel" class="tab-pane" id="communication">
-        <div class="error alert alert-danger" role="alert">The node you are using does not support Whisper</div>
-        <div id="communication-controls">
-        <h3>Listen To channel</h3>
-        <div class="form-group form-inline listen">
-          <input type="text" class="channel text form-control" placeholder="channel">
-          <button class="listenToChannel set btn btn-primary">Start Listening</button>
-          <div id="subscribeList"></div>
-          <p>messages received:<p>
-          <div id="messagesList"></div>
-        </div>
+      <div role="tabpanel" class="tab-pane" id="LawyerSignature">
 
-        <h3>Send Message</h3>
-        <div class="form-group form-inline send">
-          <input type="text" class="channel text form-control" placeholder="channel">
-          <input type="text" class="message text form-control" placeholder="message">
-          <button class="sendMessage set btn btn-primary">Send Message</button>
-        </div>
+        <h3> 1. Contract with Lawyer confirming identity</h3>
+        <div class="form-group form-inline">
+          <p>Name of Contact</p>
+          <input type="text" id="nameC" value="The Contract Name"><br><br>
+          <p>Contact Text</p><br>
+          <textarea rows="12" cols="50" id="ContractC">This contract made effective as of ________ between seller and buyer guarantee the buyer access to one beer for the cost of 1 american dollar.</textarea><br>
+            <p>Seller</p>
+            <div class="Center">
+            <canvas style="border: black;border-style: double;width:100%;min-height:150px" id="SellerC"></canvas><br>
+            <button class="btn btn-primary" id="clearSeller">Clear</button>
+            </div>
 
-        <p>Javascript calls being made: </p>
-        <div class="logs">
-          <br> EmbarkJS.Messages.setProvider('whisper')
+            <p>Buyer</p>
+            <div class="Center">
+            <canvas style="border: black;border-style: double;width:100%;min-height:150px" id="BuyerC"></canvas><br>
+            <button class="clearBuyer btn btn-primary" id="clearBuyer">Clear</button>
+            </div>
+
+            <p>Witness</p>
+            <div class="Center">
+            <canvas style="border: black;border-style: double;width:100%;min-height:150px" id="WitnessC"></canvas><br>
+            <button class="clearWitness btn btn-primary" id="clearWitness">Clear</button>
+            </div>
+            <br>
+            <br>
+
+
+
+          <p>Lawyer filing</p>
+          <select name="WalletF" class="WalletF"></select><br>
+          <p>Buyer Address</p>
+          <select name="WalletG" class="WalletG"></select><br>
+          <p>Seller Address</p>
+          <select name="WalletH" class="WalletH"></select><br>
+
+          <button class="fileContractLawyer btn btn-primary" id="fileContractLawyer">File</button>
+          <p>This will file the contract in the blockchain.</p><br><br>
+
+          <p><span class="theReturnC"></span></p><br><br>
         </div>
       </div>
+      <div role="tabpanel" class="tab-pane" id="NoLawyerSignature">
+        <h3> Get By Token</h3>
+        <div class="form-group form-inline">
+          <p>The Token</p>
+          <input type="text" id="lookUpToken" value="Insert Token"><br><br>
+          <button class="getByToken btn btn-primary" id="getByToken">Get By Token</button>
+        </div>
+
+        <h3> Get By From Briefcase - Note will only work for contracts created in tab 3</h3>
+        <div class="form-group form-inline">
+          <p>The Index of the Doc</p>
+          <input type="text" class="indexC form-control" id="indexC" value="0"><br>
+          <select name="LookUpAddress" class="LookUpAddress" id="LookUpAddress"></select><br>
+          <button class="getByAddressAndIndexC btn btn-primary" id="getByAddressAndIndexC">Get By Token</button>
+        </div>
+
+        <h3> Resulting Contract</h3>
+        <div class= "resultContract" id="resultContract"></div>
+
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="NoSignature">
+
+        <h3> 1. Contract with out lawyer</h3>
+        <div class="form-group form-inline">
+          <p>Name of Contact</p>
+          <input type="text" id="nameNL" value="The Contract Name"><br><br>
+          <p>Contact Text</p><br>
+          <textarea rows="12" cols="50" id="ContractNL">This contract made effective as of ________ between seller and buyer guarantee the buyer access to one beer for the cost of 1 american dollar.</textarea><br>
+
+          <p>Buyer Address</p>
+          <select name="WalletI" class="WalletI"></select><br>
+          <p>Seller Address</p>
+          <select name="WalletJ" class="WalletJ"></select><br>
+
+          <button class="fileContractLawyerNL btn btn-primary" id="fileContractLawyerNL">Draft</button>
+          <p>This will create the contract unsigned.</p><br><br>
+
+          <h3> Results</h3>
+          <div class= "theReturnNL" id="theReturnNL">Nothing Yet</div>
+
+          <p>Buyer Address</p>
+          <select name="WalletK" class="WalletK"></select><br>
+          <button class="signBNL btn btn-primary" id="signBNL">Sign</button><br><br>
+
+          <p>Seller Address</p>
+          <select name="WalletL" class="WalletL"></select><br>
+          <button class="signSNL btn btn-primary" id="signSNL">Sign</button><br><br>
+
+          <p>Check if Signed and deployed to wallets</p>
+          <button class="isSignedSNL btn btn-primary" id="isSignedSNL">File</button><br><br>
+
+
       </div>
 
 

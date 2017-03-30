@@ -6,38 +6,39 @@ var web3 = EmbarkSpec.web3;
 describe("StonePaper Tests", function() {
   before(function(done) {
     var contractsConfig = {
-      "SimpleStorage": {
-        args: [100]
-      },
       "StonePaper":{
-        "gas": 3000000,
+        "gas": 'auto',
+      },
+      "GasReceipt":{
+        "gas": 'auto',
+      },
+      "HumanID":{
+        "args":["$StonePaper"],
+        "gas": 'auto',
       }
     };
     EmbarkSpec.deployAll(contractsConfig, done);
   });
 
 
+  var defaultAccount;
 
-  it("Set God User", function(done) {
-    StonePaper.addSupervisor(0, function() {
-        done();
-      });
+
+  web3.eth.getAccounts(function(error, result){
+    //console.log(result);
+    defaultAccount= result[0];
   });
-
-  //var tx = {from: web3.eth.accounts[1]};
-  var primaryWallet;
-
 
   it("Check If God User is set", function(done) {
 
     StonePaper.getGod( function(err, result) {
       primaryWallet = result;
-
-      assert.notEqual(primaryWallet, 0);
+      assert.equal(primaryWallet, defaultAccount);
       done();
     });
 
   });
+
 
   it("Assign a name to the Lawyer", function(done) {
     StonePaper.assignLawyer("Lawyer McLawyerFace", function() {
@@ -65,7 +66,7 @@ describe("StonePaper Tests", function() {
 
 
   it("Create a Paper", function(done) {
-    StonePaper.createPaper("Test Paper",web3.sha3('A Signiture'),0,[],{gas: 3000000}, function(err) {
+    StonePaper.createPaper("Test Paper",web3.sha3('A Signiture'),0,[],0,[],{gas: 3000000}, function(err) {
       if (err){
         console.log(err);
         fail();
@@ -77,31 +78,31 @@ describe("StonePaper Tests", function() {
             fail();
           }else{
             console.log(result);
-          done();
+            done();
           }
-            });
+        });
       }
     });
   });
 
   it("Create a Meta", function(done) {
-      StonePaper.assignMeta("Test Meta",1,{gas: 3000000}, function(err) {
+    StonePaper.assignMeta("Test Meta",1,{gas: 3000000}, function(err) {
 
-        if (err){
-          console.log(err);
-          fail();
-        }else{
+      if (err){
+        console.log(err);
+        fail();
+      }else{
 
 
         done();
-        }
-      });
+      }
+    });
   });
 
 
 
   it("Create a Paper With Meta", function(done) {
-    StonePaper.createPaper("Test Paper with Meta",web3.sha3('A Signiture'),0,[1],{gas: 3000000}, function(err) {
+    StonePaper.createPaper("Test Paper with Meta",web3.sha3('A Signiture'),0,[1],0,[],{gas: 3000000}, function(err) {
       if (err){
         console.log(err);
         fail();
@@ -112,9 +113,96 @@ describe("StonePaper Tests", function() {
             fail();
           }else{
             console.log(result);
-          done();
+            done();
           }
+        });
+      }
+    });
+  });
+
+
+  it("Create HumanID", function(done) {
+
+    StonePaper.assignMeta("HumanID",2,{gas: 3000000}, function(err) {
+
+      if (err){
+        console.log(err);
+        fail();
+      }else{
+      }
+    });
+
+    StonePaper.assignDatabase("HumanID",2, function() {});
+
+
+    var aGas = "Human Data";
+    HumanID.createID(defaultAccount,aGas,web3.sha3(aGas),{gas: 3000000}, function(err) {
+      if (err){
+        console.log(err);
+        fail();
+      }else{
+        StonePaper.createPaper("Human Data",0,2,[2], HumanID.address,[],{gas: 3000000}, function(err) {
+          if (err){
+            console.log(err);
+            fail();
+          }else{
+            StonePaper.getPaperFromMeta(2,0, function(err, result) {
+              if (err){
+                console.log(err);
+                fail();
+              }else{
+                console.log(result);
+                done();
+              }
             });
+          }
+        });
+
+      }
+    });
+  });
+
+
+
+
+  it("Create GasReceipt", function(done) {
+
+    StonePaper.assignMeta("Gas Recipt",3,{gas: 3000000}, function(err) {
+
+      if (err){
+        console.log(err);
+        fail();
+      }else{
+      }
+    });
+
+    StonePaper.assignDatabase("Gas Recipt",3, function() {});
+
+
+    var aGas = "Gas Recipt";
+    GasReceipt.createReceipt(defaultAccount,aGas,{gas: 3000000}, function(err) {
+      if (err){
+        console.log(err);
+        fail();
+      }else{
+
+        StonePaper.createPaper("Gas Recipt",0,3,[3], GasReceipt.address,[],{gas: 3000000}, function(err) {
+
+          if (err){
+            console.log(err);
+            fail();
+          }else{
+            GasReceipt.getReceipt(defaultAccount,0,{gas: 3000000}, function(err,result) {
+              if (err){
+                console.log(err);
+                fail();
+              }else{
+                console.log(result);
+                done();
+              }
+            });
+          }
+        });
       }
     });
   });
@@ -133,21 +221,5 @@ describe("StonePaper Tests", function() {
 
 
 
-/*
-  it("should set constructor value", function(done) {
-    SimpleStorage.storedData(function(err, result) {
-      assert.equal(result.toNumber(), 100);
-      done();
-    });
-  });
 
-  it("set storage value", function(done) {
-    SimpleStorage.set(150, function() {
-      SimpleStorage.get(function(err, result) {
-        assert.equal(result.toNumber(), 150);
-        done();
-      });
-    });
-  });
-*/
 });
