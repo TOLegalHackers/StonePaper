@@ -12,9 +12,9 @@
         "args": [
         ]
       },
-      "HumanID": {
+      "SocietyList": {
         "gas": 4500000,
-        "args": ["$StonePaper"]
+        "args": []
       }
     }
   }

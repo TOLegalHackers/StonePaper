@@ -59,6 +59,73 @@ contract TwoPersonContract{
 
 }
 
+
+
+contract Society {
+  string public name;
+  address creator;
+  mapping (address => bool) public addressVerfied;
+  mapping (address => bool) public isSuperVisor;
+
+  function getName() constant returns (string Name){
+    Name = name;
+
+  }
+
+  function isVerified(address user) constant returns (bool isVerified){
+    isVerified = addressVerfied[user];
+  }
+
+  function makeSuperVisor(address user){
+    if (isSuperVisor[msg.sender]){
+      isSuperVisor[user]=true;
+    }
+  }
+
+  function verify(address user){
+    if (isSuperVisor[msg.sender]){
+      addressVerfied[user]=true;
+    }
+  }
+
+  function deVerify(address user){
+    if (isSuperVisor[msg.sender]){
+      addressVerfied[user]=false;
+    }
+  }
+
+  function Society(string theName, address personC){
+    name = theName;
+    creator = personC;
+    addressVerfied[personC]=true;
+    isSuperVisor[personC]=true;
+  }
+}
+
+contract SocietyList{
+  address[] public societies;
+  mapping (address => string) public societiesName;
+
+
+  function createNewSociety(string theName){
+    address newSociety = new Society(theName,msg.sender);
+    societies.push(newSociety);
+    societiesName[newSociety]=theName;
+  }
+
+  function getSociety(uint256 index) constant returns (address societyAddress, string name, uint256 maxLength ){
+    maxLength = societies.length;
+    if (index<maxLength){
+      societyAddress = societies[index];
+      name = societiesName[societyAddress];
+    }
+  }
+
+
+
+
+}
+
 contract StonePaper {
 
 
@@ -108,6 +175,7 @@ contract StonePaper {
     mapping (address => string) public lawyerList;
     mapping (uint256 => string) public metaList;
     mapping (uint256 => string) public databaseList;
+    mapping (uint256 => address) public databaseOwner;
     mapping (address => bool) public superVisor;
     mapping (uint256 => mapping(address => bool)) public publicMeta;
     mapping (uint256 => bool) public isPublic;
@@ -115,47 +183,43 @@ contract StonePaper {
     mapping (address => mapping(address => uint256)) public lastPaperAdded;
 
 
-    /* This generates a public event on the blockchain that will notify clients */
-    event PaperAdded(address indexed lawyer, string text, uint256 indexed metaI, uint256 meta );
-    event LawyerAdded(address indexed id, string lawyer);
-    event LawyerEdit(address indexed id, string lawyer);
-    event DatabaseAdded(uint256 indexed id, string database);
-    event DatabaseEdit(uint256 indexed id, string database);
+    //Used in the debugger to determine the number of userss
+    address[] public users;
+    mapping (address => uint256) public lookupUsers;
 
-
-    event ThereIsANewVote(address newSupervisor, address motionMadeBy,bool deathOrBirth, uint256 index);
-    event NewSupervisor(address newSupervisor);
-    event RemovedSupervisor(address oldSupervisor);
-
-
-    function getGod() constant returns ( address god){
-      god=godUser;
+    function getUser(uint256 index) constant returns (address userAddress, string userName, uint256 length){
+      if (index<users.length){
+        userAddress = users[index];
+        userName = lawyerList[users[index]];
+        length = users.length;
+      } else{
+        userAddress = 0;
+        userName = "No User";
+        length = users.length;
+      }
     }
 
 
-
+    /* This generates a public event on the blockchain that will notify clients */
+/*
+    event ThereIsANewVote(address newSupervisor, address motionMadeBy,bool deathOrBirth, uint256 index);
+    event NewSupervisor(address newSupervisor);
+    event RemovedSupervisor(address oldSupervisor);
+*/
 
     //Assign the lawyer's name in plaintext to a wallet
 
     function assignLawyer(string name){
+      if (bytes(name).length==0){
+        throw;
+      }
         if (bytes(lawyerList[msg.sender]).length == 0){
             lawyerList[msg.sender]=name;
-            LawyerAdded(msg.sender,name);
+            lookupUsers[msg.sender]=users.length;
+            users.push(msg.sender);
         }else{
-            throw;
+          lawyerList[msg.sender]=name;
         }
-    }
-
-
-    //Edit the lawyer's name in plaintext, a notification will be sent through the system to all users
-
-    function editLawyer(string name,address lawyer){
-         if (superVisor[msg.sender]==true){
-            lawyerList[lawyer]=name;
-            LawyerEdit(lawyer,name);
-         }else{
-             throw;
-         }
     }
 
     // Return the text of the Lawyer in plaintext
@@ -166,24 +230,15 @@ contract StonePaper {
 
     // Assign url to database, the database will be owned by whoever creates the database
 
-    function assignDatabase(string url, uint256 database){
-        if (bytes(databaseList[database]).length==0){
+    function setDatabase(string url, uint256 database){
+        if (databaseOwner[database]==0){
             databaseList[database]=url;
-            DatabaseAdded(database,url);
+            databaseOwner[database]=msg.sender;
         }else{
-            throw;
-        }
-    }
-
-    //Edit the url of the database can only be accomplished by the superVisor
-
-    function editDatabase(string url, uint256 database){
-         if (superVisor[msg.sender]==true){
+          if (databaseOwner[database]==msg.sender){
             databaseList[database]=url;
-            DatabaseEdit(database,url);
-         }else{
-             throw;
-         }
+          }
+        }
     }
 
     // Return the url of the database
@@ -286,7 +341,6 @@ contract StonePaper {
 
         for(x = 0; x <metaI.length; x++) {
                 metaDatabase[metaI[x]].push(theIndex);
-                PaperAdded(msg.sender, nameI,metaI[x],metaI[x]);
         }
 
         briefcase[msg.sender].push(theIndex);
@@ -350,14 +404,17 @@ contract StonePaper {
 
     */
 
-    function getPapers(uint256 indexI) constant returns (
+    function getPaper(uint256 indexI) constant returns (
         string name,
        bytes32 sig,
        uint256 database,
        uint time,
         address creator,
         address lawyer,
-        address contractLoc){
+        address contractLoc,
+        uint256 lastIndex){
+
+          if (indexI<briefcase[msg.sender].length){
 
         Paper data  = papers[briefcase[msg.sender][indexI]];
         sig=data.sig;
@@ -367,7 +424,9 @@ contract StonePaper {
         creator = data.creator;
         lawyer = data.lawyer;
         contractLoc = data.contractLoc;
-
+        lastIndex = briefcase[msg.sender].length;
+}else{
+}
 
 
     }
@@ -411,7 +470,7 @@ contract StonePaper {
         throw;     // Prevents accidental sending of ether
     }
 
-
+/*
     function addSupervisor(address newSuper){
         if (godUser == 0x0){
             godUser = msg.sender;
@@ -441,7 +500,7 @@ contract StonePaper {
     }
 
 
-    /*
+
 
         function resolveSupervisorVote(uint256 index){
             if (currentVotes[index].creator != msg.sender){
@@ -567,59 +626,4 @@ contract GasReceipt{
 
 
 
-}
-
-
-
-
-contract HumanID{
-
-  struct IDCard{
-    bool initalized;
-    string name;
-    bytes32 hashV;
-  }
-
-  mapping (address => bool) public isSuperVisor;
-  mapping (address => IDCard) public idCards;
-  mapping (address => address) public creator;
-
-  function createID(address user, string nameI, bytes32 hashI){
-    if (isSuperVisor[msg.sender]==true){
-      if (idCards[user].initalized==false){
-        idCards[user].initalized=true;
-        idCards[user].name=nameI;
-        idCards[user].hashV=hashI;
-        creator[user]=msg.sender;
-      }else{
-        throw;
-      }
-    } else{
-      throw;
-    }
-  }
-  function editID(address user, string nameI, bytes32 hashI){
-      if (creator[user]==msg.sender){
-        idCards[user].name=nameI;
-        idCards[user].hashV=hashI;
-      }else{
-        throw;
-      }
-  }
-  function addSupervisor(address user){
-    if (isSuperVisor[msg.sender]==true){
-      isSuperVisor[user]=true;
-    }
-
-  }
-  function grabID(address user) constant returns ( bool initalized,string name,bytes32 hashV){
-
-    initalized = idCards[user].initalized;
-    name = idCards[user].name;
-    hashV = idCards[user].hashV;
-  }
-
-  function HumanID(){
-    isSuperVisor[msg.sender]=true;
-  }
 }

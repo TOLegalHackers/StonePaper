@@ -10,129 +10,102 @@
     <h3>Stone Paper - Usage Example</h3>
 
     <ul class="nav nav-tabs" role="tablist" id="myTabs">
-      <li role="presentation" class="active"><a href="#blockchain" aria-controls="blockchain" role="tab" data-toggle="tab">Blockchain</a></li>
-      <li role="presentation"><a href="#GasReceipt" aria-controls="GasReceipt" role="tab" data-toggle="tab">Write Gas Recipt</a></li>
+      <li role="presentation" class="active"><a href="#briefCase" aria-controls="briefCase" role="tab" data-toggle="tab">Briefcase</a></li>
+      <li role="presentation"><a href="#Societies" aria-controls="Societies" role="tab" data-toggle="tab">Societies</a></li>
+      <li role="presentation"><a href="#Affidavit" aria-controls="Affidavit" role="tab" data-toggle="tab">Affidavit</a></li>
       <li role="presentation"><a href="#LawyerSignature" aria-controls="LawyerSignature" role="tab" data-toggle="tab" class="HasSigniture">Contract Signiture Traditional and Lawyer</a></li>
-      <li role="presentation"><a href="#NoLawyerSignature" aria-controls="NoLawyerSignature" role="tab" data-toggle="tab" class="HasSigniture">Load Contract</a></li>
       <li role="presentation"><a href="#NoSignature" aria-controls="NoSignature" role="tab" data-toggle="tab" class="HasSigniture">Contract Signiture Digital Only</a></li>
     </ul>
 
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="blockchain">
-        <h3> 1. Set the god user</h3>
+      <div role="tabpanel" class="tab-pane active" id="briefCase">
+
+      <h3> 1. Assign a Name to a Briefcase</h3>
         <div class="form-group form-inline">
-          <button class="setGod btn btn-primary">Set God</button>
-          <p>Before you get started you should create a God user to make changes at a later point. Right now God is set as the account that makes the contract and this button no longer does anything.</p>
+          <input type="text" class="lawyerName form-control" id="lawyerName" value="Set Your Lawyer Name">
+          <button class="setLawyerName btn btn-primary" id="setLawyerName">Your Name</button>
+          <p>You can identify this account on the blockchain.</p>
         </div>
 
-        <h3> 2. Get the god user</h3>
-        <div class="form-group">
-          <div>
-            Current God Is <span class="godValue"></span>
-          </div>
-          <button class="getGod btn btn-primary">Get Value</button>
-          <p>Click the button to get the wallet address of God. If the value is 0 something has gone wrong</p>
-        </div>
-
-        <h3> 3. Assign a Lawyer to an address</h3>
+        <h3> 2. Get the paper</h3>
         <div class="form-group form-inline">
-          <select name="WalletLawyer" class="WalletLawyer">
-          </select><br>
-          <input type="text" class="lawyerName form-control" value="Set Your Lawyer Name">
-          <button class="setLawyer btn btn-primary">Lawyer Name</button>
-          <p>Choose an Address from the list and identify it as a lawyer. It can only be run once per account.</p>
+          <select name="PapersPlease" class="PapersPlease"></select><br>
         </div>
+        <div class="bordered">
 
-        <h3> 4. Get the Lawyer's name</h3>
-        <div class="form-group">
-          <div>
-            This account's lawyer name is <span class="lawyerValue"></span>
-          </div><br>
-          <select name="WalletLawyerGet" class="WalletLawyerGet">
-          </select><br>
-          <button class="getLawyer btn btn-primary">Get Value</button>
-          <p>Click the button to get the Lawyer Name for his wallet</p>
+          Name of Paper: <span class="NameV" id="NameV"></span><br>
+          Hash: <span class="HashV" id="HashV"></span><br>
+          Time: <span class="TimeV" id="TimeV"></span><br>
+          Creator: <span class="LawyerV" id="LawyerV"></span><br>
+          Url: <span class="UrlV" id="UrlV"></span><br>
+
         </div>
-
-
-        <h3> 5. Assign a URL for the database</h3>
-        <div class="form-group form-inline">
-          <input type="text" class="urlName form-control" value="www.sample.com">
-          <button class="setUrl btn btn-primary">Set Value</button>
-          <p>The data isn't store in the blockchain only a hash of the data. You can set the URL where the data will be stored here. This function is bound to database 0 and can only be run once.</p>
-        </div>
-
-        <h3> 6. Get the URL for the database</h3>
-        <div class="form-group">
-          <div>
-            The URL of database is <span class="urlValue"></span>
-          </div>
-          <button class="getUrl btn btn-primary">Get Value</button>
-          <p>Click the button to get url address.</p>
-        </div>
-
-        <h3> 7.Create a Paper for the database</h3>
-        <div class="form-group form-inline">
-          <input type="text" class="docName form-control" value="Document Name"><br>
-          <input type="text" class="docText form-control" value="Text to be hashed"><br>
-          <select name="FromAddress" class="FromAddress"></select>From<br>
-          <select name="ToAddress" class="ToAddress"></select>To<br>
-          <button class="setPaper btn btn-primary">Set Value</button>
-          <p>Set the name of the document, as well as include some hash. This text will automatically be hashed and stored in the blockchain</p>
-        </div>
-
-        <h3> 8. Get the paper</h3>
-        <div class="form-group form-inline">
-          <input type="text" class="indexV form-control" value="0"><br>
-          <select name="PapersPlease" class="PapersPlease"></select>
-        </div>
-        <div class="form-group">
-          <div>
-
-
-            Name of Paper: <span class="NameV"></span><br>
-            Hash: <span class="HashV"></span><br>
-            Time: <span class="TimeV"></span><br>
-            Lawyer: <span class="LawyerV"></span><br>
-            Url: <span class="UrlV"></span><br>
-              <button class="getPaper btn btn-primary">Get Document by Index</button>
-          </div>
+        <div class="bordered">
+          <span class="HumanRead" id="HumanRead"></span>
 
         </div>
 
 
 
 
+        <br><br><br><br><br>
 
-
-        <h3> 3. Contract Calls </h3>
-        <p>Javascript calls being made: </p>
-        <div class="logs">
-        </div>
-      </div>
-      <div role="tabpanel" class="tab-pane" id="GasReceipt">
-
-        <h3> 1.Choose a Wallet and write a recipt for that wallet</h3>
-        <div class="form-group form-inline">
-          <select name="WalletA" class="WalletA">
-          </select><br>
-          <input type="text" name="ReciptName" class="ReciptName" value="Recipt">
-          <button class="setGasRecipt">Set Value</button>
-          <p>All data will be stored in the Gas Recipt contract with a reference connecting it to the wallet</p>
-        </div>
-
-        <h3> 2.Get All Recipes for Wallet</h3>
-        <div class="form-group form-inline">
-          <select name="WalletB" class="WalletB">
-          </select><br>
-          <select name="Results" class="Results">
-          </select><br>
-          <p>Get all receipts from wallet</p>
-        </div>
-
-
+        <button class="addSomeTests btn btn-primary" id="addSomeTests">Sync to Blockchain</button>
 
       </div>
+      <div role="tabpanel" class="tab-pane" id="Societies">
+        <h3> 1. Societies are to verify users</h3>
+        <div class="form-group form-inline">
+          <select name="Societies" class="Societies"></select>:Society<br>
+          <select name="UserSocieties" class="UserSocieties"></select>:User<br>
+          <button class="verifyUser btn btn-primary" id="verifyUser">Verify</button><br>
+          <span class="Verifier" id="Verifier"></span><br>
+          <p>You can verify if a user is part of a society. Useful if you want to determine if someone is a lawyer, a refugee or someone with special status</p>
+        </div>
+
+        <h3> 2. Create your own society to verify members</h3>
+        <div class="form-group form-inline">
+          <input type="text" class="societyName form-control" id="societyName" value="Society Name">
+          <button class="setSociety btn btn-primary" id="setSociety">Name</button>
+          <p>This will create a Society. Society are quick way to verify if a person is part of a group.</p>
+        </div>
+
+        <h3> 3. Add a person to your society</h3>
+        <div class="form-group form-inline">
+          <select name="SocietiesAdd" class="SocietiesAdd"></select>:Society<br>
+          <select name="UserSocietiesAdd" class="UserSocietiesAdd"></select>:User<br>
+          <button class="SocietiesAddB btn btn-primary" id="SocietiesAddB" >Add</button>
+          <p>You can add member to any society you create</p>
+        </div>
+
+
+        <h3> 4. Remove a person from your society</h3>
+        <div class="form-group form-inline">
+            <select name="SocietiesRemove" class="SocietiesRemove"></select>:Society<br>
+            <select name="UserSocietiesRemove" class="UserSocietiesRemove"></select>:User<br>
+            <button class="SocietiesRemoveB btn btn-primary" id="SocietiesRemoveB" >Remove</button>
+            <p>You can also remove members from any society you create</p>
+        </div>
+      </div>
+
+
+      <div role="tabpanel" class="tab-pane" id="Affidavit">
+        <h3> 1. Affidavits are sworn documents</h3>
+
+        <p>Title of Affidavit</p>
+        <input type="text" id="nameA" value="Title of Affidavit"><br><br>
+
+        <p>Text of Affidavit</p>
+        <textarea rows="12" cols="50" id="ContractA">Write what ever text you'd like here.</textarea><br>
+
+        <button class="fileAffidavit btn btn-primary" id="fileAffidavit">File</button>
+        <p>This will file the Affidavit in the blockchain.</p><br><br>
+        <p><span class="theReturnA"></span></p><br><br>
+
+      </div>
+
+
+
       <div role="tabpanel" class="tab-pane" id="LawyerSignature">
 
         <h3> 1. Contract with Lawyer confirming identity</h3>
@@ -163,8 +136,7 @@
 
 
 
-          <p>Lawyer filing</p>
-          <select name="WalletF" class="WalletF"></select><br>
+
           <p>Buyer Address</p>
           <select name="WalletG" class="WalletG"></select><br>
           <p>Seller Address</p>
@@ -176,27 +148,6 @@
           <p><span class="theReturnC"></span></p><br><br>
         </div>
       </div>
-      <div role="tabpanel" class="tab-pane" id="NoLawyerSignature">
-        <h3> Get By Token</h3>
-        <div class="form-group form-inline">
-          <p>The Token</p>
-          <input type="text" id="lookUpToken" value="Insert Token"><br><br>
-          <button class="getByToken btn btn-primary" id="getByToken">Get By Token</button>
-        </div>
-
-        <h3> Get By From Briefcase - Note will only work for contracts created in tab 3</h3>
-        <div class="form-group form-inline">
-          <p>The Index of the Doc</p>
-          <input type="text" class="indexC form-control" id="indexC" value="0"><br>
-          <select name="LookUpAddress" class="LookUpAddress" id="LookUpAddress"></select><br>
-          <button class="getByAddressAndIndexC btn btn-primary" id="getByAddressAndIndexC">Get By Token</button>
-        </div>
-
-        <h3> Resulting Contract</h3>
-        <div class= "resultContract" id="resultContract"></div>
-
-      </div>
-
       <div role="tabpanel" class="tab-pane" id="NoSignature">
 
         <h3> 1. Contract with out lawyer</h3>
@@ -217,6 +168,7 @@
           <h3> Results</h3>
           <div class= "theReturnNL" id="theReturnNL">Nothing Yet</div>
 
+<!--
           <p>Buyer Address</p>
           <select name="WalletK" class="WalletK"></select><br>
           <button class="signBNL btn btn-primary" id="signBNL">Sign</button><br><br>
@@ -227,7 +179,7 @@
 
           <p>Check if Signed and deployed to wallets</p>
           <button class="isSignedSNL btn btn-primary" id="isSignedSNL">File</button><br><br>
-
+-->
 
       </div>
 

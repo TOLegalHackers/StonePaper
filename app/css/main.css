@@ -3,6 +3,11 @@ div {
   margin: 15px;
 }
 
+.bordered{
+      padding: 15px;
+      border-style: solid;
+      border-width: thin;
+}
 .logs {
   background-color: black;
   font-size: 14px;
